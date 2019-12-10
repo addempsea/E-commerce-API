@@ -13,7 +13,7 @@ const register = async (req, res, next) => {
 
     if (data) {
       return res.status(400).json({
-        message: "User has been registered already"
+        message: `${email} has been registered already`
       });
 
     } else {
@@ -42,7 +42,7 @@ const login = async(req, res, next) => {
         const data = await User.findOne({ email });
         if (!data) {
             return res.status(403).json({
-                message: 'User does not exist'
+                message: email + ' is not associated with any account'
             })
         } else {
             const match = await bcrypt.compare(password, data.password);

@@ -1,26 +1,26 @@
 const item = require("../models/items");
 
 const add = async (req, res, next) => {
-    
-        try {
-            const { name, price, contact, image_url } = req.body;
-            const newItem = new item({
-                name,
-                price,
-                contact,
-                image_url
-            });
-    
-            await newItem.save();
-            return res.status(201).json({
-                message: "Advert created, return to Homepage to see "
-            })
-    
-        } catch (err) {
-            return next(err)
-        }
-    
-    
+
+    try {
+        const { name, price, contact, image_url } = req.body;
+        const newItem = new item({
+            name,
+            price,
+            contact,
+            image_url
+        });
+
+        await newItem.save();
+        return res.status(201).json({
+            message: "Advert created, return to Homepage to see "
+        })
+
+    } catch (err) {
+        return next(err)
+    }
+
+
 
 }
 
@@ -68,16 +68,16 @@ const edit = async (req, res, next) => {
         const id = req.params.id
         const { name, price, contact, image_url } = req.body
 
-        const data = await item.findOneAndUpdate({ _id: id }, {$set: {name: name, price: price, contact: contact, image_url: image_url}}, {new:true})
+        const data = await item.findOneAndUpdate({ _id: id }, { $set: { name: name, price: price, contact: contact, image_url: image_url } }, { new: true })
         if (!data) {
             return res.status(404).json({
                 message: "Item not found"
             })
 
         } else {
-            
+
             const editedItem = await data.save();
-            return res.send(editedItem);
+            return res.status(200).json({ message: "Item edited successfully" });
         }
 
     } catch (err) {
