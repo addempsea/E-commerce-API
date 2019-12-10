@@ -15,7 +15,7 @@ router.post('/api/login', controllers.login);
 router.post('/api/add', auth, controllers2.add);
 router.get("/api/items", controllers2.items);
 router.get("/api/item/:id", controllers2.itemOne);
-router.put("/api/edit/:id", controllers2.edit);
+router.put("/api/edit/:id", auth, controllers2.edit);
 router.delete("/api/delete/:id", auth, controllers2.removed);
 
 

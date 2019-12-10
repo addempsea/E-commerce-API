@@ -1,23 +1,19 @@
 const item = require("../models/items");
 
-const add = async (req, res, next) => {
+
+const add = async function createPost (req, res, next) {
 
     try {
-        const { name, price, contact, image_url } = req.body;
-        const newItem = new item({
-            name,
-            price,
-            contact,
-            image_url
-        });
-
-        await newItem.save();
+        const post = await item.addItem(req.body, req.user.id)
+        console.log(req.user.id);
+        
         return res.status(201).json({
+            post,
             message: "Advert created, return to Homepage to see "
         })
 
     } catch (err) {
-        return next(err)
+        return next (err)
     }
 
 
@@ -62,21 +58,20 @@ const itemOne = async (req, res, next) => {
 
 
 const edit = async (req, res, next) => {
-
-
     try {
-        const id = req.params.id
-        const { name, price, contact, image_url } = req.body
-
-        const data = await item.findOneAndUpdate({ _id: id }, { $set: { name: name, price: price, contact: contact, image_url: image_url } }, { new: true })
-        if (!data) {
-            return res.status(404).json({
-                message: "Item not found"
+        const post = await item.findById(req.params.id);
+        
+        if(!post.user.equals(req.user.id)) {
+            return res.status(401).json({
+                message: "You can only edit your posts"
             })
 
         } else {
+            const id = req.params.id
+            const { name, price, contact, image_url } = req.body
 
-            const editedItem = await data.save();
+            const data = await item.findOneAndUpdate({ _id: id }, { $set: { name: name, price: price, contact: contact, image_url: image_url } }, { new: true })
+            await data.save();
             return res.status(200).json({ message: "Item edited successfully" });
         }
 
@@ -88,11 +83,19 @@ const edit = async (req, res, next) => {
 
 const removed = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        await item.remove({ _id: id });
-        return res.status(200).json({
-            message: "item deleted successfully"
-        });
+        const post = await item.findById(req.params.id); 
+        if(!post.user.equals(req.user.id)) {
+            return res.status(401).json({
+                message: "You can only delete your posts"
+            })
+        } else {
+            await post.remove();
+            return res.status(200).json({
+                message: "item deleted successfully"
+            });
+        }
+
+       
 
     } catch (err) {
         return next(err)

@@ -51,7 +51,7 @@ const login = async(req, res, next) => {
                     message: 'Invalid login details'
                 })
             } else {
-                const token = await jwt.sign({ email: data.email }, process.env.SECRET, { expiresIn: "7h" }) 
+                const token = await jwt.sign({ id: data._id }, process.env.SECRET, { expiresIn: "7h" }) 
                 return res.status(200).json({
                     message: 'Login successful',
                     token: token

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+
 const Schema = mongoose.Schema;
 
 const postSchema = new Schema({
@@ -8,7 +9,20 @@ const postSchema = new Schema({
     contact: {type: String, required: true},
     image_url: {type: String, required: true},
     createdAt: {type: Date, default: Date.now},
-    // owner: {type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true}
+    user: {type: Schema.Types.ObjectId, ref: 'user'}
 });
+
+postSchema.statics = {
+   addItem(args, user) {
+       return this.create({
+           ...args,
+           user,
+       });
+   },
+   list({}) {
+       return this.find({})
+       .populate('user')
+   }
+}
 
 module.exports = mongoose.model('items', postSchema);

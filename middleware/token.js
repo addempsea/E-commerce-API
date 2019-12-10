@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
             if (err) {
                 return next(err)
             } else {
-                req.user = decoded.email;
+                req.user = decoded;
                 next();
             }
         });
